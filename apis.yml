@@ -1,0 +1,31 @@
+aid: cloudstudioiot
+name: Cloud Studio IoT
+description: 'Cloud Studio IoT is a company surfaced via the API Evangelist harvest backlog (source: new-submission)
+  and added to the network as a stub for full-pipeline profiling.'
+url: https://raw.githubusercontent.com/api-evangelist/cloudstudioiot/refs/heads/main/apis.yml
+x-type: company
+x-source: harvest:new-submission
+x-tier: stub
+x-tier-reason: harvest
+specificationVersion: '0.20'
+created: '2026-10-05'
+modified: '2026-10-05'
+tags:
+- Company
+apis: []
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
+- FN: APIs.json
+  email: info@apis.io
+common:
+- type: Website
+  url: https://cloudstudioiot.com
+- type: Documentation
+  url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
+x-submission-notes: Came by email (CEO Joaquin Cervera), not the form. The URLs in the email are Gmail-mangled
+  ('cloudstudioiot' + '.com'). Two domains, one company (cloudstudioiot.com docs, cloud.studio platform).
+x-submission-probe: apis.json 200; openapi.yaml 200 (OAS 3.1 'Data Extraction API' v2, server https://{host}
+  default gear.cloud.studio); docs 200; llms.txt 200 (630KB); invented path 404; gear.cloud.studio 200
+  (platform app).
+x-submitted-by: joaquin.cervera@cloud.studio (email/apisio, 2026-10-05T13:24:14Z)
