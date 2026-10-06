@@ -1,0 +1,222 @@
+openapi: 3.2.0
+info:
+  title: Cloud Studio IoT Data Extraction Geozones API
+  version: '2'
+  summary: Read alerts, alarms, endpoint data, geozones and the instance map from a Cloud Studio IoT instance.
+  description: 'HTTP API to extract data from the Cloud Studio IoT platform (Gear Studio):
+
+    alert definitions, the alarm history, endpoint (sensor) readings, geozones
+
+    and the client / facility / device / endpoint map of an instance.'
+  contact:
+    name: Cloud Studio IoT
+    url: https://cloudstudioiot.com/contact
+    email: info@cloud.studio
+  termsOfService: https://cloudstudioiot.com/terms
+servers:
+- url: https://{host}
+  description: A Cloud Studio IoT instance. Dedicated and on-premise instances use their own host.
+  variables:
+    host:
+      default: gear.cloud.studio
+security:
+- bearerToken: []
+- accessTokenQuery: []
+tags:
+- name: Geozones
+  description: Geozones of a client and the vehicles inside them.
+  externalDocs:
+    url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos/geozonas
+paths:
+  /api/v2/geozones:
+    get:
+      operationId: listGeozones
+      tags:
+      - Geozones
+      summary: List the geozones of a client
+      parameters:
+      - name: clientID
+        in: query
+        required: true
+        description: Client whose geozones are requested.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/maxCount'
+      responses:
+        '200':
+          description: Geozones of the client, each with the vehicles currently inside.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Geozone'
+        '500':
+          $ref: '#/components/responses/ServiceException'
+  /api/v2/geozones/incremental/{sequenceNumber}:
+    get:
+      operationId: listGeozonesIncremental
+      tags:
+      - Geozones
+      summary: List geozones changed since a sequence number
+      description: 'Returns geozones whose configuration changed, deleted ones included
+
+        (`Enabled: false`). The sequence number does not change when a vehicle
+
+        enters or leaves a geozone, so this method cannot track those events.'
+      parameters:
+      - $ref: '#/components/parameters/sequenceNumber'
+      - name: clientID
+        in: query
+        required: true
+        description: Client whose geozones are requested.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/maxCount'
+      responses:
+        '200':
+          description: Geozones changed since `sequenceNumber`. An empty list means there is nothing new.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Geozone'
+        '500':
+          $ref: '#/components/responses/ServiceException'
+  /api/v2/geozones/{geozoneID}:
+    get:
+      operationId: getGeozone
+      tags:
+      - Geozones
+      summary: Get a geozone by ID
+      parameters:
+      - name: geozoneID
+        in: path
+        required: true
+        description: Unique identifier of the geozone.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: The geozone.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Geozone'
+        '500':
+          $ref: '#/components/responses/ServiceException'
+components:
+  schemas:
+    Geozone:
+      type: object
+      properties:
+        GeozoneID:
+          type: integer
+        ClientID:
+          type: integer
+        Description:
+          type: string
+        ExternalCode:
+          type: string
+        Polygon:
+          type: object
+          properties:
+            PolygonID:
+              type: integer
+            Points:
+              type: array
+              description: Coordinates, each as latitude and longitude.
+              items:
+                type: array
+                items:
+                  type: number
+            BorderColor:
+              type: integer
+              description: 24-bit RGB.
+            BorderWidth:
+              type: integer
+              description: Pixels.
+            BorderOpacity:
+              type: number
+              minimum: 0
+              maximum: 1
+            FillColor:
+              type: integer
+              description: 24-bit RGB.
+            FillOpacity:
+              type: number
+              minimum: 0
+              maximum: 1
+        Vehicles:
+          type: array
+          description: Vehicles currently inside the geozone.
+          items:
+            type: object
+            properties:
+              VehicleID:
+                type: integer
+              Description:
+                type: string
+              LicensePlate:
+                type: string
+        SequenceNumber:
+          type: integer
+          format: int64
+        Enabled:
+          type: boolean
+          description: False when the geozone was deleted. Deleted geozones only appear in the incremental list.
+  parameters:
+    maxCount:
+      name: maxCount
+      in: query
+      description: Maximum number of items in the result.
+      schema:
+        type: integer
+    sequenceNumber:
+      name: sequenceNumber
+      in: path
+      required: true
+      description: '`SequenceNumber` of the last item received. Use 0 to start from the beginning.'
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+  responses:
+    ServiceException:
+      description: The request failed. A missing, invalid or expired access token is also reported this way.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Exception:
+                type: object
+                properties:
+                  ClassName:
+                    type: string
+                  FaultCode:
+                    type: string
+                  FaultData:
+                    type: string
+                  Message:
+                    type: string
+          example:
+            Exception:
+              ClassName: ServiceException
+              FaultCode: '8001'
+              FaultData: ''
+              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+      description: 'Persistent access token sent as `Authorization: Bearer {accessToken}`.'
+    accessTokenQuery:
+      type: apiKey
+      in: query
+      name: accessToken
+      description: The same access token in the query string, for clients that cannot set headers.
+externalDocs:
+  description: Data Extraction APIs documentation
+  url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos

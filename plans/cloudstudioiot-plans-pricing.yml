@@ -1,0 +1,23 @@
+generated: '2026-10-05'
+name: Cloud Studio IoT Pricing
+method: searched
+source: https://cloudstudioiot.com/pricing
+audience: developer-api
+pricing_basis: per-seat
+published: true
+plan_count: 2
+plans:
+  - name: Shared Instance
+    price_text: "€ 100 / mo"
+    price: 100
+    currency: EUR
+    billing_period: month
+    features: []
+    limits: []
+  - name: Dedicated Instance
+    price_text: "€ 550 / mo"
+    price: 550
+    currency: EUR
+    billing_period: month
+    features: []
+    limits: []

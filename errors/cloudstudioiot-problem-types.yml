@@ -1,0 +1,26 @@
+generated: '2026-10-05'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/cloudstudioiot-openapi.yaml
+format: custom
+envelope:
+  media_type: application/json
+  schema: null
+coverage:
+  operations: 15
+  statuses_declared: 2
+problems:
+- status: 400
+  title: Bad Request
+  description: More than five endpoints were requested.
+  operations: 1
+  media_types: []
+  schema: null
+- status: 500
+  title: Internal Server Error
+  description: The request failed. A missing, invalid or expired access token is also reported this way.
+  operations: 15
+  media_types:
+  - application/json
+  schema: null

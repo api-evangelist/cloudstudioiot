@@ -1,31 +1,225 @@
 aid: cloudstudioiot
 name: Cloud Studio IoT
-description: 'Cloud Studio IoT is a company surfaced via the API Evangelist harvest backlog (source: new-submission)
-  and added to the network as a stub for full-pipeline profiling.'
+image: https://cloudstudioiot.com/og?title=Industrial+AI+Software+for+IoT&subtitle=Industrial+AI+software+on+your+IoT+platform%3A+an+AI+Copilot+that+answers+questions+about+your+real-time+telemetry%2C+under+your+own%E2%80%A6
+description: Cloud Studio IoT provides an Industrial AI IoT platform delivering end‑to‑end solutions for verticals such as smart cities, energy
+  management, agriculture and manufacturing. Their cloud‑based services include data extraction APIs, AI‑driven analytics, device connectivity
+  (LoRaWAN, MQTT, NB‑IoT) and a low‑code scripting environment. The company emphasizes real‑time telemetry, AI‑powered insights and a comprehensive
+  suite of tools for developers to integrate, monitor and manage IoT deployments.
 url: https://raw.githubusercontent.com/api-evangelist/cloudstudioiot/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:new-submission
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-05 (modular-v1; was harvest)
 specificationVersion: '0.20'
 created: '2026-10-05'
 modified: '2026-10-05'
 tags:
 - Company
-apis: []
+- IoT
+- AI
+- Industrial
+- Platform
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/cloudstudioiot-agentic-access.yml
+- type: Plans
+  url: plans/cloudstudioiot-plans-pricing.yml
+- type: Spectral
+  url: rules/cloudstudioiot-rules.yml
+- type: JSONLD
+  url: json-ld/cloudstudioiot-context.jsonld
+- type: Vocabulary
+  url: vocabulary/cloudstudioiot-vocabulary.yml
+- type: DataModel
+  url: data-model/cloudstudioiot-data-model.yml
+- type: ErrorCatalog
+  url: errors/cloudstudioiot-problem-types.yml
+- type: Conformance
+  url: conformance/cloudstudioiot-conformance.yml
+- type: LLMsTxt
+  url: llms/cloudstudioiot-llms.txt
+- type: Hosts
+  url: hosts/cloudstudioiot-hosts.yml
+- type: Vendors
+  url: vendors/cloudstudioiot-vendors.yml
+- type: StatusPage
+  url: https://status.cloudstudioiot.com/
+- type: Security
+  url: https://cloudstudioiot.com/hub/topics/security
+- type: ChangeLog
+  url: https://cloudstudioiot.com/docs/release-notes
+- type: Authentication
+  url: authentication/cloudstudioiot-authentication.yml
+- type: DomainSecurity
+  url: security/cloudstudioiot-domain-security.yml
 - type: Website
   url: https://cloudstudioiot.com
 - type: Documentation
   url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
-x-submission-notes: Came by email (CEO Joaquin Cervera), not the form. The URLs in the email are Gmail-mangled
-  ('cloudstudioiot' + '.com'). Two domains, one company (cloudstudioiot.com docs, cloud.studio platform).
-x-submission-probe: apis.json 200; openapi.yaml 200 (OAS 3.1 'Data Extraction API' v2, server https://{host}
-  default gear.cloud.studio); docs 200; llms.txt 200 (630KB); invented path 404; gear.cloud.studio 200
-  (platform app).
+- type: GettingStarted
+  url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
+- type: Support
+  url: https://cloudstudioiot.com/contact
+- type: Blog
+  url: https://cloudstudioiot.com/hub
+- type: GitHubOrganization
+  url: https://github.com/CloudStudioIoT
+- type: Pricing
+  url: https://cloudstudioiot.com/pricing
+- type: SignUp
+  url: https://cloudstudioiot.com/contact
+- type: TermsOfService
+  url: https://cloudstudioiot.com/terms
+- type: PrivacyPolicy
+  url: https://cloudstudioiot.com/privacy
+- type: Postman
+  url: https://www.postman.com/cloudstudioiot/workspace
+apis:
+- aid: cloudstudioiot:cloudstudioiot-access-tokens-api
+  name: Cloud Studio IoT Access tokens API
+  description: Create and delete the persistent access tokens the rest of the API uses.
+  humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
+  baseURL: https://{host}
+  tags:
+  - Access tokens
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudstudioiot-access-tokens-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alert-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-geozone-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-endpoint-data-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-create-access-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alarm-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-client-access-token-schema.json
+- aid: cloudstudioiot:cloudstudioiot-alarms-api
+  name: Cloud Studio IoT Alarms API
+  description: Alarms recorded by the platform, open and closed.
+  humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
+  baseURL: https://{host}
+  tags:
+  - Alarms
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudstudioiot-alarms-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alert-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-geozone-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-endpoint-data-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-create-access-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alarm-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-client-access-token-schema.json
+- aid: cloudstudioiot:cloudstudioiot-alerts-api
+  name: Cloud Studio IoT Alerts API
+  description: Alert definitions (the rules that open alarms).
+  humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
+  baseURL: https://{host}
+  tags:
+  - Alerts
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudstudioiot-alerts-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alert-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-geozone-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-endpoint-data-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-create-access-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alarm-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-client-access-token-schema.json
+- aid: cloudstudioiot:cloudstudioiot-endpoint-data-api
+  name: Cloud Studio IoT Endpoint data API
+  description: Readings reported by endpoints (sensors and actuators).
+  humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
+  baseURL: https://{host}
+  tags:
+  - Endpoint data
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudstudioiot-endpoint-data-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alert-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-geozone-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-endpoint-data-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-create-access-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alarm-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-client-access-token-schema.json
+- aid: cloudstudioiot:cloudstudioiot-geozones-api
+  name: Cloud Studio IoT Geozones API
+  description: Geozones of a client and the vehicles inside them.
+  humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
+  baseURL: https://{host}
+  tags:
+  - Geozones
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudstudioiot-geozones-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alert-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-geozone-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-endpoint-data-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-create-access-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alarm-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-client-access-token-schema.json
+- aid: cloudstudioiot:cloudstudioiot-instance-api
+  name: Cloud Studio IoT Instance API
+  description: Map of clients, facilities, devices and endpoints.
+  humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
+  baseURL: https://{host}
+  tags:
+  - Instance
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudstudioiot-instance-api-openapi.yml
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alert-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-geozone-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-endpoint-data-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-create-access-token-request-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-alarm-schema.json
+  - type: JSONSchema
+    url: json-schema/cloudstudioiot-client-access-token-schema.json
+x-submission-notes: Came by email (CEO Joaquin Cervera), not the form. The URLs in the email are Gmail-mangled ('cloudstudioiot' + '.com'). Two
+  domains, one company (cloudstudioiot.com docs, cloud.studio platform).
+x-submission-probe: apis.json 200; openapi.yaml 200 (OAS 3.1 'Data Extraction API' v2, server https://{host} default gear.cloud.studio); docs
+  200; llms.txt 200 (630KB); invented path 404; gear.cloud.studio 200 (platform app).
 x-submitted-by: joaquin.cervera@cloud.studio (email/apisio, 2026-10-05T13:24:14Z)
+x-enrichment:
+  date: '2026-10-05'
+  status: enriched
+  artifacts_added: 19
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local

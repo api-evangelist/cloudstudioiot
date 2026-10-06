@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/cloudstudioiot/main/json-schema/cloudstudioiot-create-access-token-request-schema.json",
+  "title": "CreateAccessTokenRequest",
+  "x-generated": "2026-10-05",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/cloudstudioiot-openapi.yaml#/components/schemas/CreateAccessTokenRequest",
+  "type": "object",
+  "required": [
+    "clientAccessToken",
+    "login"
+  ],
+  "properties": {
+    "clientAccessToken": {
+      "type": "object",
+      "required": [
+        "Description",
+        "ClientID"
+      ],
+      "properties": {
+        "Description": {
+          "type": "string",
+          "maxLength": 255,
+          "description": "What the token is for. Must be unique."
+        },
+        "ClientID": {
+          "type": "integer",
+          "description": "Client the token is created for."
+        }
+      }
+    },
+    "login": {
+      "type": "object",
+      "required": [
+        "LoginType",
+        "Email",
+        "Password"
+      ],
+      "properties": {
+        "LoginType": {
+          "type": "integer",
+          "const": 1
+        },
+        "Email": {
+          "type": "string",
+          "format": "email"
+        },
+        "Password": {
+          "type": "string",
+          "format": "password"
+        }
+      }
+    },
+    "expiration": {
+      "type": "integer",
+      "description": "Minutes the token stays valid from its creation. Omit it for a token that expires on 2099-01-01."
+    }
+  }
+}

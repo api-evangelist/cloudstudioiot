@@ -1,0 +1,243 @@
+openapi: 3.2.0
+info:
+  title: Cloud Studio IoT Data Extraction Alarms API
+  version: '2'
+  summary: Read alerts, alarms, endpoint data, geozones and the instance map from a Cloud Studio IoT instance.
+  description: 'HTTP API to extract data from the Cloud Studio IoT platform (Gear Studio):
+
+    alert definitions, the alarm history, endpoint (sensor) readings, geozones
+
+    and the client / facility / device / endpoint map of an instance.'
+  contact:
+    name: Cloud Studio IoT
+    url: https://cloudstudioiot.com/contact
+    email: info@cloud.studio
+  termsOfService: https://cloudstudioiot.com/terms
+servers:
+- url: https://{host}
+  description: A Cloud Studio IoT instance. Dedicated and on-premise instances use their own host.
+  variables:
+    host:
+      default: gear.cloud.studio
+security:
+- bearerToken: []
+- accessTokenQuery: []
+tags:
+- name: Alarms
+  description: Alarms recorded by the platform, open and closed.
+  externalDocs:
+    url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos/alarmas
+paths:
+  /api/v2/alarms:
+    get:
+      operationId: listAlarms
+      tags:
+      - Alarms
+      summary: List alarms
+      description: Send one, and only one, of `clientID`, `facilityID`, `deviceID` or `endpointID`.
+      parameters:
+      - $ref: '#/components/parameters/clientID'
+      - $ref: '#/components/parameters/facilityID'
+      - $ref: '#/components/parameters/deviceID'
+      - $ref: '#/components/parameters/endpointID'
+      - $ref: '#/components/parameters/dateFrom'
+      - $ref: '#/components/parameters/dateTo'
+      - name: state
+        in: query
+        description: Alarm state to return.
+        schema:
+          type: string
+          enum:
+          - open
+          - closed
+          - all
+      - $ref: '#/components/parameters/maxCount500'
+      responses:
+        '200':
+          description: Matching alarms.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alarm'
+        '500':
+          $ref: '#/components/responses/ServiceException'
+  /api/v2/alarms/incremental/{sequenceNumber}:
+    get:
+      operationId: listAlarmsIncremental
+      tags:
+      - Alarms
+      summary: List alarms changed since a sequence number
+      description: 'Returns alarms whose `SequenceNumber` is higher than the one sent. An
+
+        alarm gets a new sequence number when it changes, including when it is
+
+        closed. Send one, and only one, of `clientID`, `facilityID`, `deviceID`
+
+        or `endpointID`, and keep the same filter between calls.'
+      parameters:
+      - $ref: '#/components/parameters/sequenceNumber'
+      - $ref: '#/components/parameters/clientID'
+      - $ref: '#/components/parameters/facilityID'
+      - $ref: '#/components/parameters/deviceID'
+      - $ref: '#/components/parameters/endpointID'
+      - $ref: '#/components/parameters/maxCount500'
+      responses:
+        '200':
+          description: Alarms changed since `sequenceNumber`. An empty list means there is nothing new.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alarm'
+        '500':
+          $ref: '#/components/responses/ServiceException'
+  /api/v2/alarms/{alarmID}:
+    get:
+      operationId: getAlarm
+      tags:
+      - Alarms
+      summary: Get an alarm by ID
+      parameters:
+      - name: alarmID
+        in: path
+        required: true
+        description: Unique identifier of the alarm.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: The alarm.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alarm'
+        '500':
+          $ref: '#/components/responses/ServiceException'
+components:
+  responses:
+    ServiceException:
+      description: The request failed. A missing, invalid or expired access token is also reported this way.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Exception:
+                type: object
+                properties:
+                  ClassName:
+                    type: string
+                  FaultCode:
+                    type: string
+                  FaultData:
+                    type: string
+                  Message:
+                    type: string
+          example:
+            Exception:
+              ClassName: ServiceException
+              FaultCode: '8001'
+              FaultData: ''
+              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
+  parameters:
+    dateFrom:
+      name: dateFrom
+      in: query
+      description: Date from which items are returned.
+      schema:
+        type: string
+    dateTo:
+      name: dateTo
+      in: query
+      description: Date until which items are returned.
+      schema:
+        type: string
+    endpointID:
+      name: endpointID
+      in: query
+      description: Only items of this endpoint.
+      schema:
+        type: integer
+    clientID:
+      name: clientID
+      in: query
+      description: Only items of this client.
+      schema:
+        type: integer
+    facilityID:
+      name: facilityID
+      in: query
+      description: Only items of this facility.
+      schema:
+        type: integer
+    deviceID:
+      name: deviceID
+      in: query
+      description: Only items of this device.
+      schema:
+        type: integer
+    sequenceNumber:
+      name: sequenceNumber
+      in: path
+      required: true
+      description: '`SequenceNumber` of the last item received. Use 0 to start from the beginning.'
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+    maxCount500:
+      name: maxCount
+      in: query
+      description: Maximum number of records in the result. Values above 500 are limited to 500.
+      schema:
+        type: integer
+        maximum: 500
+  schemas:
+    Alarm:
+      type: object
+      properties:
+        AlarmID:
+          type: integer
+        DeviceID:
+          type: integer
+        EndpointID:
+          type: integer
+        AlarmTypeID:
+          type: integer
+        AlarmTypeDescription:
+          type: string
+        AlarmSeverityID:
+          type: integer
+          enum:
+          - 0
+          - 1
+          - 2
+          - 3
+          description: 0 information, 1 low, 2 medium, 3 high.
+        AlarmSeverityDescription:
+          type: string
+        Details:
+          type: string
+        DateTimeCreated_UTC:
+          type: string
+        DateTimeClosed_UTC:
+          type: string
+        SequenceNumber:
+          type: integer
+          format: int64
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+      description: 'Persistent access token sent as `Authorization: Bearer {accessToken}`.'
+    accessTokenQuery:
+      type: apiKey
+      in: query
+      name: accessToken
+      description: The same access token in the query string, for clients that cannot set headers.
+externalDocs:
+  description: Data Extraction APIs documentation
+  url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos

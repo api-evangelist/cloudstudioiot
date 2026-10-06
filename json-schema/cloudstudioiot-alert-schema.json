@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/cloudstudioiot/main/json-schema/cloudstudioiot-alert-schema.json",
+  "title": "Alert",
+  "description": "Configuration of an alert.",
+  "x-generated": "2026-10-05",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/cloudstudioiot-openapi.yaml#/components/schemas/Alert",
+  "type": "object",
+  "properties": {
+    "AlertID": {
+      "type": "integer"
+    },
+    "VariableTypeID": {
+      "type": "integer",
+      "description": "Variable the alert watches. User-defined variables are 1000 or\nhigher. Predefined: 1 temperature, 2 humidity, 3 light level,\n4 setpoint, 5 volume, 6 active energy, 7 run time, 8 discrete\nsensor state, 9 dimmerization, 10 weight, 11 flow, 12 voltage,\n13 current, 14 active power, 15 reactive power, 16 apparent power,\n17 power factor, 18 pressure, 19 frequency, 20 ppm concentration,\n21 mass/volume concentration, 22 AQI, 23 people flow, 24 people\ncount, 25 reactive energy, 26 apparent energy, 27 location.\n"
+    },
+    "EndpointID": {
+      "type": "integer"
+    },
+    "FacilityID": {
+      "type": "integer"
+    },
+    "ClientID": {
+      "type": "integer"
+    },
+    "ConditionType": {
+      "$ref": "#/$defs/ConditionType"
+    },
+    "Threshold": {
+      "type": "number",
+      "format": "double",
+      "description": "Value compared with `ConditionType` to trigger the alert."
+    },
+    "NormalConditionType": {
+      "$ref": "#/$defs/ConditionType"
+    },
+    "NormalThreshold": {
+      "type": "number",
+      "format": "double",
+      "description": "Value compared with `NormalConditionType` to close the alert."
+    },
+    "MinimumDurationSeconds": {
+      "type": "integer",
+      "description": "Seconds the condition must hold before the alert triggers."
+    },
+    "NotificationEmails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "NotificationSMSNumbers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "NotificationVoiceNumbers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "Tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "SequenceNumber": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "Enabled": {
+      "type": "boolean",
+      "description": "False when the alert was deleted. Deleted alerts only appear in the incremental list."
+    }
+  },
+  "$defs": {
+    "ConditionType": {
+      "type": "integer",
+      "enum": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "description": "1 equal, 2 not equal, 3 greater, 4 greater or equal, 5 lower, 6 lower or equal."
+    }
+  }
+}

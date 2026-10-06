@@ -1,0 +1,87 @@
+generated: '2026-10-05'
+method: derived
+generator: derive-vocabulary.py
+source: openapi/cloudstudioiot-openapi.yaml
+vocabulary:
+  name: Cloud Studio IoT Domain Vocabulary
+  description: 'Terms declared by Cloud Studio IoT''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-05'
+  terms:
+  - term: Access tokens
+    definition: Create and delete the persistent access tokens the rest of the API uses.
+    tags:
+    - Resource Group
+    source: openapi/cloudstudioiot-openapi.yaml
+  - term: Alerts
+    definition: Alert definitions (the rules that open alarms).
+    tags:
+    - Resource Group
+    source: openapi/cloudstudioiot-openapi.yaml
+  - term: Alarms
+    definition: Alarms recorded by the platform, open and closed.
+    tags:
+    - Resource Group
+    source: openapi/cloudstudioiot-openapi.yaml
+  - term: Endpoint data
+    definition: Readings reported by endpoints (sensors and actuators).
+    tags:
+    - Resource Group
+    source: openapi/cloudstudioiot-openapi.yaml
+  - term: Geozones
+    definition: Geozones of a client and the vehicles inside them.
+    tags:
+    - Resource Group
+    source: openapi/cloudstudioiot-openapi.yaml
+  - term: Instance
+    definition: Map of clients, facilities, devices and endpoints.
+    tags:
+    - Resource Group
+    source: openapi/cloudstudioiot-openapi.yaml
+  - term: CreateAccessTokenRequest
+    definition: 'Object declared by the contract with fields: clientAccessToken, login, expiration.'
+    tags:
+    - Object
+    source: openapi/cloudstudioiot-openapi.yaml#/components/schemas/CreateAccessTokenRequest
+  - term: ClientAccessToken
+    definition: 'Object declared by the contract with fields: AccessToken, ClientAccessTokenID, ClientID, Description, DateTimeCreated, ExpirationDateTime.'
+    tags:
+    - Object
+    source: openapi/cloudstudioiot-openapi.yaml#/components/schemas/ClientAccessToken
+  - term: DateTimeParts
+    definition: 'Object declared by the contract with fields: Date, Time.'
+    tags:
+    - Object
+    source: openapi/cloudstudioiot-openapi.yaml#/components/schemas/DateTimeParts
+  - term: Alert
+    definition: Configuration of an alert.
+    tags:
+    - Object
+    source: openapi/cloudstudioiot-openapi.yaml#/components/schemas/Alert
+  - term: ConditionType
+    definition: 1 equal, 2 not equal, 3 greater, 4 greater or equal, 5 lower, 6 lower or equal.
+    tags:
+    - Enumeration
+    source: openapi/cloudstudioiot-openapi.yaml#/components/schemas/ConditionType
+  - term: Alarm
+    definition: 'Object declared by the contract with fields: AlarmID, DeviceID, EndpointID, AlarmTypeID, AlarmTypeDescription, AlarmSeverityID,
+      AlarmSeverityDescription, Details, DateTimeCreated_UTC, DateTimeClosed_UTC, SequenceNumber.'
+    tags:
+    - Object
+    source: openapi/cloudstudioiot-openapi.yaml#/components/schemas/Alarm
+  - term: EndpointData
+    definition: A reading. Which value fields are present depends on the type of endpoint.
+    tags:
+    - Object
+    source: openapi/cloudstudioiot-openapi.yaml#/components/schemas/EndpointData
+  - term: LatestEndpointData
+    definition: 'Object declared by the contract with fields: EndpointID, Description, SequenceNumber, TimeStamp_UTC, Value.'
+    tags:
+    - Object
+    source: openapi/cloudstudioiot-openapi.yaml#/components/schemas/LatestEndpointData
+  - term: Geozone
+    definition: 'Object declared by the contract with fields: GeozoneID, ClientID, Description, ExternalCode, Polygon, Vehicles, SequenceNumber,
+      Enabled.'
+    tags:
+    - Object
+    source: openapi/cloudstudioiot-openapi.yaml#/components/schemas/Geozone

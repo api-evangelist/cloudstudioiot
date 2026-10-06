@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/cloudstudioiot/main/json-schema/cloudstudioiot-alarm-schema.json",
+  "title": "Alarm",
+  "x-generated": "2026-10-05",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/cloudstudioiot-openapi.yaml#/components/schemas/Alarm",
+  "type": "object",
+  "properties": {
+    "AlarmID": {
+      "type": "integer"
+    },
+    "DeviceID": {
+      "type": "integer"
+    },
+    "EndpointID": {
+      "type": "integer"
+    },
+    "AlarmTypeID": {
+      "type": "integer"
+    },
+    "AlarmTypeDescription": {
+      "type": "string"
+    },
+    "AlarmSeverityID": {
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "description": "0 information, 1 low, 2 medium, 3 high."
+    },
+    "AlarmSeverityDescription": {
+      "type": "string"
+    },
+    "Details": {
+      "type": "string"
+    },
+    "DateTimeCreated_UTC": {
+      "type": "string"
+    },
+    "DateTimeClosed_UTC": {
+      "type": "string"
+    },
+    "SequenceNumber": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

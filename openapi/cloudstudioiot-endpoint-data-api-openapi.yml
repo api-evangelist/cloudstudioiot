@@ -1,0 +1,278 @@
+openapi: 3.2.0
+info:
+  title: Cloud Studio IoT Data Extraction Endpoint data API
+  version: '2'
+  summary: Read alerts, alarms, endpoint data, geozones and the instance map from a Cloud Studio IoT instance.
+  description: 'HTTP API to extract data from the Cloud Studio IoT platform (Gear Studio):
+
+    alert definitions, the alarm history, endpoint (sensor) readings, geozones
+
+    and the client / facility / device / endpoint map of an instance.'
+  contact:
+    name: Cloud Studio IoT
+    url: https://cloudstudioiot.com/contact
+    email: info@cloud.studio
+  termsOfService: https://cloudstudioiot.com/terms
+servers:
+- url: https://{host}
+  description: A Cloud Studio IoT instance. Dedicated and on-premise instances use their own host.
+  variables:
+    host:
+      default: gear.cloud.studio
+security:
+- bearerToken: []
+- accessTokenQuery: []
+tags:
+- name: Endpoint data
+  description: Readings reported by endpoints (sensors and actuators).
+  externalDocs:
+    url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos/datos-de-endpoints
+paths:
+  /api/v2/endpointData:
+    get:
+      operationId: listEndpointData
+      tags:
+      - Endpoint data
+      summary: Get the data of an endpoint
+      parameters:
+      - name: endpointID
+        in: query
+        required: true
+        description: Endpoint to read data from.
+        schema:
+          type: integer
+      - $ref: '#/components/parameters/dateFrom'
+      - $ref: '#/components/parameters/dateTo'
+      - $ref: '#/components/parameters/maxCount500'
+      responses:
+        '200':
+          description: Matching readings.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EndpointData'
+              example:
+              - EndpointID: 113653
+                Timestamp_UTC: '2021-10-15T22:51:19'
+                Value: 18.91
+                SequenceNumber: 6683839
+        '500':
+          $ref: '#/components/responses/ServiceException'
+  /api/v2/endpointData/incremental/{sequenceNumber}:
+    get:
+      operationId: listEndpointDataIncremental
+      tags:
+      - Endpoint data
+      summary: List endpoint data recorded since a sequence number
+      description: 'Returns readings whose `SequenceNumber` is higher than the one sent.
+
+        Send one, and only one, of `clientID`, `facilityID`, `deviceID` or
+
+        `endpointID`, and keep the same filter between calls.'
+      parameters:
+      - $ref: '#/components/parameters/sequenceNumber'
+      - $ref: '#/components/parameters/clientID'
+      - $ref: '#/components/parameters/facilityID'
+      - $ref: '#/components/parameters/deviceID'
+      - $ref: '#/components/parameters/endpointID'
+      - $ref: '#/components/parameters/maxCount500'
+      responses:
+        '200':
+          description: Readings recorded since `sequenceNumber`. An empty list means there is nothing new.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EndpointData'
+        '500':
+          $ref: '#/components/responses/ServiceException'
+  /api/v2/endpointData/multiple:
+    get:
+      operationId: getLatestEndpointData
+      tags:
+      - Endpoint data
+      summary: Get the latest reading of up to five endpoints
+      description: One call for the last value of several sensors. Camera endpoints are excluded.
+      parameters:
+      - name: endpointIds
+        in: query
+        required: true
+        description: Endpoint identifiers separated by commas, five at most.
+        style: form
+        explode: false
+        schema:
+          type: array
+          maxItems: 5
+          items:
+            type: integer
+        example:
+        - 351031
+        - 151040
+        - 252340
+      responses:
+        '200':
+          description: One object per requested endpoint. `Value` and the timestamp are null when the endpoint has no data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LatestEndpointData'
+        '400':
+          description: More than five endpoints were requested.
+        '500':
+          $ref: '#/components/responses/ServiceException'
+components:
+  parameters:
+    maxCount500:
+      name: maxCount
+      in: query
+      description: Maximum number of records in the result. Values above 500 are limited to 500.
+      schema:
+        type: integer
+        maximum: 500
+    dateFrom:
+      name: dateFrom
+      in: query
+      description: Date from which items are returned.
+      schema:
+        type: string
+    dateTo:
+      name: dateTo
+      in: query
+      description: Date until which items are returned.
+      schema:
+        type: string
+    endpointID:
+      name: endpointID
+      in: query
+      description: Only items of this endpoint.
+      schema:
+        type: integer
+    clientID:
+      name: clientID
+      in: query
+      description: Only items of this client.
+      schema:
+        type: integer
+    facilityID:
+      name: facilityID
+      in: query
+      description: Only items of this facility.
+      schema:
+        type: integer
+    deviceID:
+      name: deviceID
+      in: query
+      description: Only items of this device.
+      schema:
+        type: integer
+    sequenceNumber:
+      name: sequenceNumber
+      in: path
+      required: true
+      description: '`SequenceNumber` of the last item received. Use 0 to start from the beginning.'
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+  schemas:
+    LatestEndpointData:
+      type: object
+      properties:
+        EndpointID:
+          type: integer
+        Description:
+          type: string
+          description: Name of the endpoint.
+        SequenceNumber:
+          type: integer
+          format: int64
+        TimeStamp_UTC:
+          type:
+          - string
+          - 'null'
+        Value:
+          type:
+          - number
+          - 'null'
+    EndpointData:
+      type: object
+      description: A reading. Which value fields are present depends on the type of endpoint.
+      properties:
+        EndpointID:
+          type: integer
+        Timestamp_UTC:
+          type: string
+        Value:
+          type: number
+          format: double
+          description: Numeric value. Scalar endpoints and IAS zones.
+        IsOn:
+          type: boolean
+          description: Appliances and dimmers.
+        IsMoving:
+          type: boolean
+          description: Closures.
+        DimLevel:
+          type: integer
+          description: Dimmers.
+        Position:
+          type: integer
+          description: Closure controllers.
+        ActiveEnergy:
+          type: number
+          format: double
+          description: Power meters.
+        ReactiveEnergy:
+          type: number
+          format: double
+          description: Power meters.
+        ApparentEnergy:
+          type: number
+          format: double
+          description: Power meters.
+        SequenceNumber:
+          type: integer
+          format: int64
+  responses:
+    ServiceException:
+      description: The request failed. A missing, invalid or expired access token is also reported this way.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Exception:
+                type: object
+                properties:
+                  ClassName:
+                    type: string
+                  FaultCode:
+                    type: string
+                  FaultData:
+                    type: string
+                  Message:
+                    type: string
+          example:
+            Exception:
+              ClassName: ServiceException
+              FaultCode: '8001'
+              FaultData: ''
+              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+      description: 'Persistent access token sent as `Authorization: Bearer {accessToken}`.'
+    accessTokenQuery:
+      type: apiKey
+      in: query
+      name: accessToken
+      description: The same access token in the query string, for clients that cannot set headers.
+externalDocs:
+  description: Data Extraction APIs documentation
+  url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos

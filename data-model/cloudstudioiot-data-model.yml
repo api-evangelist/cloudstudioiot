@@ -1,0 +1,38 @@
+generated: '2026-10-05'
+method: derived
+generator: derive-data-model.py
+source:
+- openapi/cloudstudioiot-openapi.yaml
+notation: has_one = property $ref; has_many = array of $ref; belongs_to = <entity>_id field
+summary:
+  entities: 8
+  entities_in_spec: 8
+  relationships: 2
+entities:
+- name: Alarm
+  fields: 11
+- name: Alert
+  fields: 16
+  description: Configuration of an alert.
+- name: ClientAccessToken
+  fields: 6
+- name: CreateAccessTokenRequest
+  fields: 3
+- name: DateTimeParts
+  fields: 2
+- name: EndpointData
+  fields: 11
+  description: A reading. Which value fields are present depends on the type of endpoint.
+- name: Geozone
+  fields: 8
+- name: LatestEndpointData
+  fields: 5
+relationships:
+- from: ClientAccessToken
+  to: DateTimeParts
+  type: has_one
+  via: DateTimeCreated
+- from: ClientAccessToken
+  to: DateTimeParts
+  type: has_one
+  via: ExpirationDateTime

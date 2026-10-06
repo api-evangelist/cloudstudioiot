@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/cloudstudioiot/main/json-schema/cloudstudioiot-endpoint-data-schema.json",
+  "title": "EndpointData",
+  "description": "A reading. Which value fields are present depends on the type of endpoint.",
+  "x-generated": "2026-10-05",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/cloudstudioiot-openapi.yaml#/components/schemas/EndpointData",
+  "type": "object",
+  "properties": {
+    "EndpointID": {
+      "type": "integer"
+    },
+    "Timestamp_UTC": {
+      "type": "string"
+    },
+    "Value": {
+      "type": "number",
+      "format": "double",
+      "description": "Numeric value. Scalar endpoints and IAS zones."
+    },
+    "IsOn": {
+      "type": "boolean",
+      "description": "Appliances and dimmers."
+    },
+    "IsMoving": {
+      "type": "boolean",
+      "description": "Closures."
+    },
+    "DimLevel": {
+      "type": "integer",
+      "description": "Dimmers."
+    },
+    "Position": {
+      "type": "integer",
+      "description": "Closure controllers."
+    },
+    "ActiveEnergy": {
+      "type": "number",
+      "format": "double",
+      "description": "Power meters."
+    },
+    "ReactiveEnergy": {
+      "type": "number",
+      "format": "double",
+      "description": "Power meters."
+    },
+    "ApparentEnergy": {
+      "type": "number",
+      "format": "double",
+      "description": "Power meters."
+    },
+    "SequenceNumber": {
+      "type": "integer",
+      "format": "int64"
+    }
+  }
+}

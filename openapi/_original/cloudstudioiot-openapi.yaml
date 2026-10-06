@@ -1,0 +1,853 @@
+# x-archived-from: cloudstudioiot-openapi.yaml
+# x-archived-on: 2026-10-05
+openapi: 3.1.0
+info:
+  title: Cloud Studio IoT Data Extraction API
+  version: "2"
+  summary: Read alerts, alarms, endpoint data, geozones and the instance map from a Cloud Studio IoT instance.
+  description: |
+    HTTP API to extract data from the Cloud Studio IoT platform (Gear Studio):
+    alert definitions, the alarm history, endpoint (sensor) readings, geozones
+    and the client / facility / device / endpoint map of an instance.
+
+    Every list has an incremental variant driven by `SequenceNumber`, a value
+    that only grows: store the last one you received and ask again from there
+    to get what changed since.
+
+    This document is written from the public documentation at
+    https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos, which is the
+    reference if the two ever differ.
+  contact:
+    name: Cloud Studio IoT
+    url: https://cloudstudioiot.com/contact
+    email: info@cloud.studio
+  termsOfService: https://cloudstudioiot.com/terms
+externalDocs:
+  description: Data Extraction APIs documentation
+  url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
+servers:
+  - url: https://{host}
+    description: A Cloud Studio IoT instance. Dedicated and on-premise instances use their own host.
+    variables:
+      host:
+        default: gear.cloud.studio
+tags:
+  - name: Access tokens
+    description: Create and delete the persistent access tokens the rest of the API uses.
+    externalDocs:
+      url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos/access-tokens-persistentes
+  - name: Alerts
+    description: Alert definitions (the rules that open alarms).
+    externalDocs:
+      url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos/alertas
+  - name: Alarms
+    description: Alarms recorded by the platform, open and closed.
+    externalDocs:
+      url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos/alarmas
+  - name: Endpoint data
+    description: Readings reported by endpoints (sensors and actuators).
+    externalDocs:
+      url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos/datos-de-endpoints
+  - name: Geozones
+    description: Geozones of a client and the vehicles inside them.
+    externalDocs:
+      url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos/geozonas
+  - name: Instance
+    description: Map of clients, facilities, devices and endpoints.
+    externalDocs:
+      url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos/api-de-mapeo-de-instancia
+security:
+  - bearerToken: []
+  - accessTokenQuery: []
+paths:
+  /services/gear/AuthorizationService.svc/CreateClientAccessTokenAllIntegrations:
+    post:
+      operationId: createAccessToken
+      tags: [Access tokens]
+      summary: Create a persistent access token
+      description: |
+        Creates an access token that inherits the permissions of the user whose
+        credentials are sent. Without `expiration` the token expires on
+        2099-01-01.
+
+        Two requests with the same `Description` fail. After three consecutive
+        requests with wrong credentials the API answers "Please complete the
+        captcha" until that user signs in to the platform and solves it.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAccessTokenRequest"
+            example:
+              clientAccessToken:
+                Description: Reporting integration
+                ClientID: 79
+              login:
+                LoginType: 1
+                Email: user@example.com
+                Password: "********"
+              expiration: 3600
+      responses:
+        "200":
+          description: The token was created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  CreateClientAccessTokenAllIntegrationsResult:
+                    $ref: "#/components/schemas/ClientAccessToken"
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /services/gear/AuthorizationService.svc/DeleteClientAccessToken:
+    post:
+      operationId: deleteAccessToken
+      tags: [Access tokens]
+      summary: Delete a persistent access token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [accessToken, clientAccessTokenID]
+              properties:
+                accessToken:
+                  type: string
+                  description: Access token to delete.
+                clientAccessTokenID:
+                  type: integer
+                  description: Identifier returned as `ClientAccessTokenID` when the token was created.
+            example:
+              accessToken: 99a4d0a4-932d-468b-9c17-49b5afdffb0d
+              clientAccessTokenID: 14
+      responses:
+        "200":
+          description: The token was deleted. The body is an empty object.
+          content:
+            application/json:
+              schema:
+                type: object
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/alerts:
+    get:
+      operationId: listAlerts
+      tags: [Alerts]
+      summary: List alerts
+      description: Send one, and only one, of `clientID`, `facilityID`, `deviceID` or `endpointID`.
+      parameters:
+        - $ref: "#/components/parameters/clientID"
+        - $ref: "#/components/parameters/facilityID"
+        - $ref: "#/components/parameters/deviceID"
+        - $ref: "#/components/parameters/endpointID"
+        - $ref: "#/components/parameters/maxCount"
+      responses:
+        "200":
+          description: Matching alerts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/alerts/incremental/{sequenceNumber}:
+    get:
+      operationId: listAlertsIncremental
+      tags: [Alerts]
+      summary: List alerts changed since a sequence number
+      description: |
+        Returns alerts whose `SequenceNumber` is higher than the one sent,
+        deleted ones included (`Enabled: false`). Send one, and only one, of
+        `clientID`, `facilityID`, `deviceID` or `endpointID`, and keep the same
+        filter between calls.
+      parameters:
+        - $ref: "#/components/parameters/sequenceNumber"
+        - $ref: "#/components/parameters/clientID"
+        - $ref: "#/components/parameters/facilityID"
+        - $ref: "#/components/parameters/deviceID"
+        - $ref: "#/components/parameters/endpointID"
+        - $ref: "#/components/parameters/maxCount"
+      responses:
+        "200":
+          description: Alerts changed since `sequenceNumber`. An empty list means there is nothing new.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/alerts/{alertID}:
+    get:
+      operationId: getAlert
+      tags: [Alerts]
+      summary: Get an alert by ID
+      parameters:
+        - name: alertID
+          in: path
+          required: true
+          description: Unique identifier of the alert.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: The alert.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/alarms:
+    get:
+      operationId: listAlarms
+      tags: [Alarms]
+      summary: List alarms
+      description: Send one, and only one, of `clientID`, `facilityID`, `deviceID` or `endpointID`.
+      parameters:
+        - $ref: "#/components/parameters/clientID"
+        - $ref: "#/components/parameters/facilityID"
+        - $ref: "#/components/parameters/deviceID"
+        - $ref: "#/components/parameters/endpointID"
+        - $ref: "#/components/parameters/dateFrom"
+        - $ref: "#/components/parameters/dateTo"
+        - name: state
+          in: query
+          description: Alarm state to return.
+          schema:
+            type: string
+            enum: [open, closed, all]
+        - $ref: "#/components/parameters/maxCount500"
+      responses:
+        "200":
+          description: Matching alarms.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alarm"
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/alarms/incremental/{sequenceNumber}:
+    get:
+      operationId: listAlarmsIncremental
+      tags: [Alarms]
+      summary: List alarms changed since a sequence number
+      description: |
+        Returns alarms whose `SequenceNumber` is higher than the one sent. An
+        alarm gets a new sequence number when it changes, including when it is
+        closed. Send one, and only one, of `clientID`, `facilityID`, `deviceID`
+        or `endpointID`, and keep the same filter between calls.
+      parameters:
+        - $ref: "#/components/parameters/sequenceNumber"
+        - $ref: "#/components/parameters/clientID"
+        - $ref: "#/components/parameters/facilityID"
+        - $ref: "#/components/parameters/deviceID"
+        - $ref: "#/components/parameters/endpointID"
+        - $ref: "#/components/parameters/maxCount500"
+      responses:
+        "200":
+          description: Alarms changed since `sequenceNumber`. An empty list means there is nothing new.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alarm"
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/alarms/{alarmID}:
+    get:
+      operationId: getAlarm
+      tags: [Alarms]
+      summary: Get an alarm by ID
+      parameters:
+        - name: alarmID
+          in: path
+          required: true
+          description: Unique identifier of the alarm.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: The alarm.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alarm"
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/endpointData:
+    get:
+      operationId: listEndpointData
+      tags: [Endpoint data]
+      summary: Get the data of an endpoint
+      parameters:
+        - name: endpointID
+          in: query
+          required: true
+          description: Endpoint to read data from.
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/dateFrom"
+        - $ref: "#/components/parameters/dateTo"
+        - $ref: "#/components/parameters/maxCount500"
+      responses:
+        "200":
+          description: Matching readings.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EndpointData"
+              example:
+                - EndpointID: 113653
+                  Timestamp_UTC: "2021-10-15T22:51:19"
+                  Value: 18.91
+                  SequenceNumber: 6683839
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/endpointData/incremental/{sequenceNumber}:
+    get:
+      operationId: listEndpointDataIncremental
+      tags: [Endpoint data]
+      summary: List endpoint data recorded since a sequence number
+      description: |
+        Returns readings whose `SequenceNumber` is higher than the one sent.
+        Send one, and only one, of `clientID`, `facilityID`, `deviceID` or
+        `endpointID`, and keep the same filter between calls.
+      parameters:
+        - $ref: "#/components/parameters/sequenceNumber"
+        - $ref: "#/components/parameters/clientID"
+        - $ref: "#/components/parameters/facilityID"
+        - $ref: "#/components/parameters/deviceID"
+        - $ref: "#/components/parameters/endpointID"
+        - $ref: "#/components/parameters/maxCount500"
+      responses:
+        "200":
+          description: Readings recorded since `sequenceNumber`. An empty list means there is nothing new.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EndpointData"
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/endpointData/multiple:
+    get:
+      operationId: getLatestEndpointData
+      tags: [Endpoint data]
+      summary: Get the latest reading of up to five endpoints
+      description: One call for the last value of several sensors. Camera endpoints are excluded.
+      parameters:
+        - name: endpointIds
+          in: query
+          required: true
+          description: Endpoint identifiers separated by commas, five at most.
+          style: form
+          explode: false
+          schema:
+            type: array
+            maxItems: 5
+            items:
+              type: integer
+          example: [351031, 151040, 252340]
+      responses:
+        "200":
+          description: One object per requested endpoint. `Value` and the timestamp are null when the endpoint has no data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LatestEndpointData"
+        "400":
+          description: More than five endpoints were requested.
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/geozones:
+    get:
+      operationId: listGeozones
+      tags: [Geozones]
+      summary: List the geozones of a client
+      parameters:
+        - name: clientID
+          in: query
+          required: true
+          description: Client whose geozones are requested.
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/maxCount"
+      responses:
+        "200":
+          description: Geozones of the client, each with the vehicles currently inside.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Geozone"
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/geozones/incremental/{sequenceNumber}:
+    get:
+      operationId: listGeozonesIncremental
+      tags: [Geozones]
+      summary: List geozones changed since a sequence number
+      description: |
+        Returns geozones whose configuration changed, deleted ones included
+        (`Enabled: false`). The sequence number does not change when a vehicle
+        enters or leaves a geozone, so this method cannot track those events.
+      parameters:
+        - $ref: "#/components/parameters/sequenceNumber"
+        - name: clientID
+          in: query
+          required: true
+          description: Client whose geozones are requested.
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/maxCount"
+      responses:
+        "200":
+          description: Geozones changed since `sequenceNumber`. An empty list means there is nothing new.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Geozone"
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/geozones/{geozoneID}:
+    get:
+      operationId: getGeozone
+      tags: [Geozones]
+      summary: Get a geozone by ID
+      parameters:
+        - name: geozoneID
+          in: path
+          required: true
+          description: Unique identifier of the geozone.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: The geozone.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Geozone"
+        "500":
+          $ref: "#/components/responses/ServiceException"
+  /api/v2/instance/mapping/{sequenceNumber}:
+    get:
+      operationId: getInstanceMapping
+      tags: [Instance]
+      summary: Map the clients, facilities, devices and endpoints of an instance
+      description: |
+        Returns the instance tree in batches: client, facility, device (with
+        its address) and endpoint, each with its identifier and description.
+        Start at 0, store the last sequence number received and repeat until
+        the list comes back empty. Only complete branches are returned, so a
+        device without endpoints does not appear. Requires the access token of
+        a global administrator.
+      parameters:
+        - $ref: "#/components/parameters/sequenceNumber"
+        - name: maxCount
+          in: query
+          description: Maximum number of records to return. Defaults to 100; 500 at most.
+          schema:
+            type: integer
+            default: 100
+            maximum: 500
+      responses:
+        "200":
+          description: A batch of the instance map. An empty list means there are no updates.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: Client, facility, device and endpoint identifiers and descriptions of one branch.
+        "500":
+          $ref: "#/components/responses/ServiceException"
+components:
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+      description: "Persistent access token sent as `Authorization: Bearer {accessToken}`."
+    accessTokenQuery:
+      type: apiKey
+      in: query
+      name: accessToken
+      description: The same access token in the query string, for clients that cannot set headers.
+  parameters:
+    sequenceNumber:
+      name: sequenceNumber
+      in: path
+      required: true
+      description: "`SequenceNumber` of the last item received. Use 0 to start from the beginning."
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+    clientID:
+      name: clientID
+      in: query
+      description: Only items of this client.
+      schema:
+        type: integer
+    facilityID:
+      name: facilityID
+      in: query
+      description: Only items of this facility.
+      schema:
+        type: integer
+    deviceID:
+      name: deviceID
+      in: query
+      description: Only items of this device.
+      schema:
+        type: integer
+    endpointID:
+      name: endpointID
+      in: query
+      description: Only items of this endpoint.
+      schema:
+        type: integer
+    dateFrom:
+      name: dateFrom
+      in: query
+      description: Date from which items are returned.
+      schema:
+        type: string
+    dateTo:
+      name: dateTo
+      in: query
+      description: Date until which items are returned.
+      schema:
+        type: string
+    maxCount:
+      name: maxCount
+      in: query
+      description: Maximum number of items in the result.
+      schema:
+        type: integer
+    maxCount500:
+      name: maxCount
+      in: query
+      description: Maximum number of records in the result. Values above 500 are limited to 500.
+      schema:
+        type: integer
+        maximum: 500
+  responses:
+    ServiceException:
+      description: The request failed. A missing, invalid or expired access token is also reported this way.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Exception:
+                type: object
+                properties:
+                  ClassName:
+                    type: string
+                  FaultCode:
+                    type: string
+                  FaultData:
+                    type: string
+                  Message:
+                    type: string
+          example:
+            Exception:
+              ClassName: ServiceException
+              FaultCode: "8001"
+              FaultData: ""
+              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
+  schemas:
+    CreateAccessTokenRequest:
+      type: object
+      required: [clientAccessToken, login]
+      properties:
+        clientAccessToken:
+          type: object
+          required: [Description, ClientID]
+          properties:
+            Description:
+              type: string
+              maxLength: 255
+              description: What the token is for. Must be unique.
+            ClientID:
+              type: integer
+              description: Client the token is created for.
+        login:
+          type: object
+          required: [LoginType, Email, Password]
+          properties:
+            LoginType:
+              type: integer
+              const: 1
+            Email:
+              type: string
+              format: email
+            Password:
+              type: string
+              format: password
+        expiration:
+          type: integer
+          description: Minutes the token stays valid from its creation. Omit it for a token that expires on 2099-01-01.
+    ClientAccessToken:
+      type: object
+      properties:
+        AccessToken:
+          type: string
+        ClientAccessTokenID:
+          type: integer
+        ClientID:
+          type: integer
+        Description:
+          type: string
+        DateTimeCreated:
+          $ref: "#/components/schemas/DateTimeParts"
+        ExpirationDateTime:
+          $ref: "#/components/schemas/DateTimeParts"
+    DateTimeParts:
+      type: object
+      properties:
+        Date:
+          type: object
+          properties:
+            Day:
+              type: integer
+            Month:
+              type: integer
+            Year:
+              type: integer
+        Time:
+          type: object
+          properties:
+            Hour:
+              type: integer
+            Minute:
+              type: integer
+            Second:
+              type: integer
+            Millisecond:
+              type: integer
+    Alert:
+      type: object
+      description: Configuration of an alert.
+      properties:
+        AlertID:
+          type: integer
+        VariableTypeID:
+          type: integer
+          description: |
+            Variable the alert watches. User-defined variables are 1000 or
+            higher. Predefined: 1 temperature, 2 humidity, 3 light level,
+            4 setpoint, 5 volume, 6 active energy, 7 run time, 8 discrete
+            sensor state, 9 dimmerization, 10 weight, 11 flow, 12 voltage,
+            13 current, 14 active power, 15 reactive power, 16 apparent power,
+            17 power factor, 18 pressure, 19 frequency, 20 ppm concentration,
+            21 mass/volume concentration, 22 AQI, 23 people flow, 24 people
+            count, 25 reactive energy, 26 apparent energy, 27 location.
+        EndpointID:
+          type: integer
+        FacilityID:
+          type: integer
+        ClientID:
+          type: integer
+        ConditionType:
+          $ref: "#/components/schemas/ConditionType"
+        Threshold:
+          type: number
+          format: double
+          description: Value compared with `ConditionType` to trigger the alert.
+        NormalConditionType:
+          $ref: "#/components/schemas/ConditionType"
+        NormalThreshold:
+          type: number
+          format: double
+          description: Value compared with `NormalConditionType` to close the alert.
+        MinimumDurationSeconds:
+          type: integer
+          description: Seconds the condition must hold before the alert triggers.
+        NotificationEmails:
+          type: array
+          items:
+            type: string
+        NotificationSMSNumbers:
+          type: array
+          items:
+            type: string
+        NotificationVoiceNumbers:
+          type: array
+          items:
+            type: string
+        Tags:
+          type: array
+          items:
+            type: string
+        SequenceNumber:
+          type: integer
+          format: int64
+        Enabled:
+          type: boolean
+          description: False when the alert was deleted. Deleted alerts only appear in the incremental list.
+    ConditionType:
+      type: integer
+      enum: [1, 2, 3, 4, 5, 6]
+      description: 1 equal, 2 not equal, 3 greater, 4 greater or equal, 5 lower, 6 lower or equal.
+    Alarm:
+      type: object
+      properties:
+        AlarmID:
+          type: integer
+        DeviceID:
+          type: integer
+        EndpointID:
+          type: integer
+        AlarmTypeID:
+          type: integer
+        AlarmTypeDescription:
+          type: string
+        AlarmSeverityID:
+          type: integer
+          enum: [0, 1, 2, 3]
+          description: 0 information, 1 low, 2 medium, 3 high.
+        AlarmSeverityDescription:
+          type: string
+        Details:
+          type: string
+        DateTimeCreated_UTC:
+          type: string
+        DateTimeClosed_UTC:
+          type: string
+        SequenceNumber:
+          type: integer
+          format: int64
+    EndpointData:
+      type: object
+      description: A reading. Which value fields are present depends on the type of endpoint.
+      properties:
+        EndpointID:
+          type: integer
+        Timestamp_UTC:
+          type: string
+        Value:
+          type: number
+          format: double
+          description: Numeric value. Scalar endpoints and IAS zones.
+        IsOn:
+          type: boolean
+          description: Appliances and dimmers.
+        IsMoving:
+          type: boolean
+          description: Closures.
+        DimLevel:
+          type: integer
+          description: Dimmers.
+        Position:
+          type: integer
+          description: Closure controllers.
+        ActiveEnergy:
+          type: number
+          format: double
+          description: Power meters.
+        ReactiveEnergy:
+          type: number
+          format: double
+          description: Power meters.
+        ApparentEnergy:
+          type: number
+          format: double
+          description: Power meters.
+        SequenceNumber:
+          type: integer
+          format: int64
+    LatestEndpointData:
+      type: object
+      properties:
+        EndpointID:
+          type: integer
+        Description:
+          type: string
+          description: Name of the endpoint.
+        SequenceNumber:
+          type: integer
+          format: int64
+        TimeStamp_UTC:
+          type: [string, "null"]
+        Value:
+          type: [number, "null"]
+    Geozone:
+      type: object
+      properties:
+        GeozoneID:
+          type: integer
+        ClientID:
+          type: integer
+        Description:
+          type: string
+        ExternalCode:
+          type: string
+        Polygon:
+          type: object
+          properties:
+            PolygonID:
+              type: integer
+            Points:
+              type: array
+              description: Coordinates, each as latitude and longitude.
+              items:
+                type: array
+                items:
+                  type: number
+            BorderColor:
+              type: integer
+              description: 24-bit RGB.
+            BorderWidth:
+              type: integer
+              description: Pixels.
+            BorderOpacity:
+              type: number
+              minimum: 0
+              maximum: 1
+            FillColor:
+              type: integer
+              description: 24-bit RGB.
+            FillOpacity:
+              type: number
+              minimum: 0
+              maximum: 1
+        Vehicles:
+          type: array
+          description: Vehicles currently inside the geozone.
+          items:
+            type: object
+            properties:
+              VehicleID:
+                type: integer
+              Description:
+                type: string
+              LicensePlate:
+                type: string
+        SequenceNumber:
+          type: integer
+          format: int64
+        Enabled:
+          type: boolean
+          description: False when the geozone was deleted. Deleted geozones only appear in the incremental list.

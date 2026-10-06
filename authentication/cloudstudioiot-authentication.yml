@@ -1,0 +1,23 @@
+generated: '2026-10-05'
+method: derived
+source: openapi/cloudstudioiot-openapi.yaml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - query
+schemes:
+- name: bearerToken
+  type: http
+  scheme: bearer
+  description: 'Persistent access token sent as `Authorization: Bearer {accessToken}`.'
+  sources:
+  - openapi/cloudstudioiot-openapi.yaml
+- name: accessTokenQuery
+  type: apiKey
+  in: query
+  parameter: accessToken
+  description: The same access token in the query string, for clients that cannot set headers.
+  sources:
+  - openapi/cloudstudioiot-openapi.yaml

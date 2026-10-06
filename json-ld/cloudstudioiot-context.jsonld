@@ -1,0 +1,215 @@
+{
+  "@context": {
+    "@vocab": "https://cloudstudioiot.com/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "cloudstudioiot": "https://cloudstudioiot.com/schema#",
+    "CreateAccessTokenRequest": "cloudstudioiot:CreateAccessTokenRequest",
+    "clientAccessToken": {
+      "@id": "cloudstudioiot:clientAccessToken"
+    },
+    "login": {
+      "@id": "cloudstudioiot:login"
+    },
+    "expiration": {
+      "@id": "cloudstudioiot:expiration",
+      "@type": "xsd:integer"
+    },
+    "ClientAccessToken": "cloudstudioiot:ClientAccessToken",
+    "AccessToken": {
+      "@id": "cloudstudioiot:AccessToken",
+      "@type": "xsd:string"
+    },
+    "ClientAccessTokenID": {
+      "@id": "cloudstudioiot:ClientAccessTokenID",
+      "@type": "xsd:integer"
+    },
+    "ClientID": {
+      "@id": "cloudstudioiot:ClientID",
+      "@type": "xsd:integer"
+    },
+    "Description": {
+      "@id": "cloudstudioiot:Description",
+      "@type": "xsd:string"
+    },
+    "DateTimeCreated": {
+      "@id": "cloudstudioiot:DateTimeCreated",
+      "@type": "@id"
+    },
+    "ExpirationDateTime": {
+      "@id": "cloudstudioiot:ExpirationDateTime",
+      "@type": "@id"
+    },
+    "DateTimeParts": "cloudstudioiot:DateTimeParts",
+    "Date": {
+      "@id": "cloudstudioiot:Date"
+    },
+    "Time": {
+      "@id": "cloudstudioiot:Time"
+    },
+    "Alert": "cloudstudioiot:Alert",
+    "AlertID": {
+      "@id": "cloudstudioiot:AlertID",
+      "@type": "xsd:integer"
+    },
+    "VariableTypeID": {
+      "@id": "cloudstudioiot:VariableTypeID",
+      "@type": "xsd:integer"
+    },
+    "EndpointID": {
+      "@id": "cloudstudioiot:EndpointID",
+      "@type": "xsd:integer"
+    },
+    "FacilityID": {
+      "@id": "cloudstudioiot:FacilityID",
+      "@type": "xsd:integer"
+    },
+    "ConditionType": {
+      "@id": "cloudstudioiot:ConditionType",
+      "@type": "@id"
+    },
+    "Threshold": {
+      "@id": "cloudstudioiot:Threshold",
+      "@type": "xsd:decimal"
+    },
+    "NormalConditionType": {
+      "@id": "cloudstudioiot:NormalConditionType",
+      "@type": "@id"
+    },
+    "NormalThreshold": {
+      "@id": "cloudstudioiot:NormalThreshold",
+      "@type": "xsd:decimal"
+    },
+    "MinimumDurationSeconds": {
+      "@id": "cloudstudioiot:MinimumDurationSeconds",
+      "@type": "xsd:integer"
+    },
+    "NotificationEmails": {
+      "@id": "cloudstudioiot:NotificationEmails",
+      "@container": "@list"
+    },
+    "NotificationSMSNumbers": {
+      "@id": "cloudstudioiot:NotificationSMSNumbers",
+      "@container": "@list"
+    },
+    "NotificationVoiceNumbers": {
+      "@id": "cloudstudioiot:NotificationVoiceNumbers",
+      "@container": "@list"
+    },
+    "Tags": {
+      "@id": "cloudstudioiot:Tags",
+      "@container": "@list"
+    },
+    "SequenceNumber": {
+      "@id": "cloudstudioiot:SequenceNumber",
+      "@type": "xsd:integer"
+    },
+    "Enabled": {
+      "@id": "cloudstudioiot:Enabled",
+      "@type": "xsd:boolean"
+    },
+    "Alarm": "cloudstudioiot:Alarm",
+    "AlarmID": {
+      "@id": "cloudstudioiot:AlarmID",
+      "@type": "xsd:integer"
+    },
+    "DeviceID": {
+      "@id": "cloudstudioiot:DeviceID",
+      "@type": "xsd:integer"
+    },
+    "AlarmTypeID": {
+      "@id": "cloudstudioiot:AlarmTypeID",
+      "@type": "xsd:integer"
+    },
+    "AlarmTypeDescription": {
+      "@id": "cloudstudioiot:AlarmTypeDescription",
+      "@type": "xsd:string"
+    },
+    "AlarmSeverityID": {
+      "@id": "cloudstudioiot:AlarmSeverityID",
+      "@type": "xsd:integer"
+    },
+    "AlarmSeverityDescription": {
+      "@id": "cloudstudioiot:AlarmSeverityDescription",
+      "@type": "xsd:string"
+    },
+    "Details": {
+      "@id": "cloudstudioiot:Details",
+      "@type": "xsd:string"
+    },
+    "DateTimeCreated_UTC": {
+      "@id": "cloudstudioiot:DateTimeCreated_UTC",
+      "@type": "xsd:string"
+    },
+    "DateTimeClosed_UTC": {
+      "@id": "cloudstudioiot:DateTimeClosed_UTC",
+      "@type": "xsd:string"
+    },
+    "EndpointData": "cloudstudioiot:EndpointData",
+    "Timestamp_UTC": {
+      "@id": "cloudstudioiot:Timestamp_UTC",
+      "@type": "xsd:string"
+    },
+    "Value": {
+      "@id": "cloudstudioiot:Value",
+      "@type": "xsd:decimal"
+    },
+    "IsOn": {
+      "@id": "cloudstudioiot:IsOn",
+      "@type": "xsd:boolean"
+    },
+    "IsMoving": {
+      "@id": "cloudstudioiot:IsMoving",
+      "@type": "xsd:boolean"
+    },
+    "DimLevel": {
+      "@id": "cloudstudioiot:DimLevel",
+      "@type": "xsd:integer"
+    },
+    "Position": {
+      "@id": "cloudstudioiot:Position",
+      "@type": "xsd:integer"
+    },
+    "ActiveEnergy": {
+      "@id": "cloudstudioiot:ActiveEnergy",
+      "@type": "xsd:decimal"
+    },
+    "ReactiveEnergy": {
+      "@id": "cloudstudioiot:ReactiveEnergy",
+      "@type": "xsd:decimal"
+    },
+    "ApparentEnergy": {
+      "@id": "cloudstudioiot:ApparentEnergy",
+      "@type": "xsd:decimal"
+    },
+    "LatestEndpointData": "cloudstudioiot:LatestEndpointData",
+    "TimeStamp_UTC": {
+      "@id": "cloudstudioiot:TimeStamp_UTC",
+      "@type": "xsd:string"
+    },
+    "Geozone": "cloudstudioiot:Geozone",
+    "GeozoneID": {
+      "@id": "cloudstudioiot:GeozoneID",
+      "@type": "xsd:integer"
+    },
+    "ExternalCode": {
+      "@id": "cloudstudioiot:ExternalCode",
+      "@type": "xsd:string"
+    },
+    "Polygon": {
+      "@id": "cloudstudioiot:Polygon"
+    },
+    "Vehicles": {
+      "@id": "cloudstudioiot:Vehicles",
+      "@container": "@list"
+    }
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Cloud Studio IoT API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Cloud Studio IoT's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-05) from openapi/cloudstudioiot-openapi.yaml.",
+  "dcterms:created": "2026-10-05",
+  "dcterms:source": [
+    "openapi/cloudstudioiot-openapi.yaml"
+  ]
+}

@@ -1,0 +1,227 @@
+openapi: 3.2.0
+info:
+  title: Cloud Studio IoT Data Extraction Access tokens API
+  version: '2'
+  summary: Read alerts, alarms, endpoint data, geozones and the instance map from a Cloud Studio IoT instance.
+  description: 'HTTP API to extract data from the Cloud Studio IoT platform (Gear Studio):
+
+    alert definitions, the alarm history, endpoint (sensor) readings, geozones
+
+    and the client / facility / device / endpoint map of an instance.'
+  contact:
+    name: Cloud Studio IoT
+    url: https://cloudstudioiot.com/contact
+    email: info@cloud.studio
+  termsOfService: https://cloudstudioiot.com/terms
+servers:
+- url: https://{host}
+  description: A Cloud Studio IoT instance. Dedicated and on-premise instances use their own host.
+  variables:
+    host:
+      default: gear.cloud.studio
+security:
+- bearerToken: []
+- accessTokenQuery: []
+tags:
+- name: Access Tokens
+  description: Create and delete the persistent access tokens the rest of the API uses.
+  externalDocs:
+    url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos/access-tokens-persistentes
+paths:
+  /services/gear/AuthorizationService.svc/CreateClientAccessTokenAllIntegrations:
+    post:
+      operationId: createAccessToken
+      tags:
+      - Access Tokens
+      summary: Create a persistent access token
+      description: 'Creates an access token that inherits the permissions of the user whose
+
+        credentials are sent. Without `expiration` the token expires on
+
+        2099-01-01.
+
+
+        Two requests with the same `Description` fail. After three consecutive
+
+        requests with wrong credentials the API answers "Please complete the
+
+        captcha" until that user signs in to the platform and solves it.'
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccessTokenRequest'
+            example:
+              clientAccessToken:
+                Description: Reporting integration
+                ClientID: 79
+              login:
+                LoginType: 1
+                Email: user@example.com
+                Password: '********'
+              expiration: 3600
+      responses:
+        '200':
+          description: The token was created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  CreateClientAccessTokenAllIntegrationsResult:
+                    $ref: '#/components/schemas/ClientAccessToken'
+        '500':
+          $ref: '#/components/responses/ServiceException'
+  /services/gear/AuthorizationService.svc/DeleteClientAccessToken:
+    post:
+      operationId: deleteAccessToken
+      tags:
+      - Access Tokens
+      summary: Delete a persistent access token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - accessToken
+              - clientAccessTokenID
+              properties:
+                accessToken:
+                  type: string
+                  description: Access token to delete.
+                clientAccessTokenID:
+                  type: integer
+                  description: Identifier returned as `ClientAccessTokenID` when the token was created.
+            example:
+              accessToken: 99a4d0a4-932d-468b-9c17-49b5afdffb0d
+              clientAccessTokenID: 14
+      responses:
+        '200':
+          description: The token was deleted. The body is an empty object.
+          content:
+            application/json:
+              schema:
+                type: object
+        '500':
+          $ref: '#/components/responses/ServiceException'
+components:
+  schemas:
+    DateTimeParts:
+      type: object
+      properties:
+        Date:
+          type: object
+          properties:
+            Day:
+              type: integer
+            Month:
+              type: integer
+            Year:
+              type: integer
+        Time:
+          type: object
+          properties:
+            Hour:
+              type: integer
+            Minute:
+              type: integer
+            Second:
+              type: integer
+            Millisecond:
+              type: integer
+    ClientAccessToken:
+      type: object
+      properties:
+        AccessToken:
+          type: string
+        ClientAccessTokenID:
+          type: integer
+        ClientID:
+          type: integer
+        Description:
+          type: string
+        DateTimeCreated:
+          $ref: '#/components/schemas/DateTimeParts'
+        ExpirationDateTime:
+          $ref: '#/components/schemas/DateTimeParts'
+    CreateAccessTokenRequest:
+      type: object
+      required:
+      - clientAccessToken
+      - login
+      properties:
+        clientAccessToken:
+          type: object
+          required:
+          - Description
+          - ClientID
+          properties:
+            Description:
+              type: string
+              maxLength: 255
+              description: What the token is for. Must be unique.
+            ClientID:
+              type: integer
+              description: Client the token is created for.
+        login:
+          type: object
+          required:
+          - LoginType
+          - Email
+          - Password
+          properties:
+            LoginType:
+              type: integer
+              const: 1
+            Email:
+              type: string
+              format: email
+            Password:
+              type: string
+              format: password
+        expiration:
+          type: integer
+          description: Minutes the token stays valid from its creation. Omit it for a token that expires on 2099-01-01.
+  responses:
+    ServiceException:
+      description: The request failed. A missing, invalid or expired access token is also reported this way.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Exception:
+                type: object
+                properties:
+                  ClassName:
+                    type: string
+                  FaultCode:
+                    type: string
+                  FaultData:
+                    type: string
+                  Message:
+                    type: string
+          example:
+            Exception:
+              ClassName: ServiceException
+              FaultCode: '8001'
+              FaultData: ''
+              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+      description: 'Persistent access token sent as `Authorization: Bearer {accessToken}`.'
+    accessTokenQuery:
+      type: apiKey
+      in: query
+      name: accessToken
+      description: The same access token in the query string, for clients that cannot set headers.
+externalDocs:
+  description: Data Extraction APIs documentation
+  url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos

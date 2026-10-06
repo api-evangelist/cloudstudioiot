@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/cloudstudioiot/main/json-schema/cloudstudioiot-geozone-schema.json",
+  "title": "Geozone",
+  "x-generated": "2026-10-05",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/cloudstudioiot-openapi.yaml#/components/schemas/Geozone",
+  "type": "object",
+  "properties": {
+    "GeozoneID": {
+      "type": "integer"
+    },
+    "ClientID": {
+      "type": "integer"
+    },
+    "Description": {
+      "type": "string"
+    },
+    "ExternalCode": {
+      "type": "string"
+    },
+    "Polygon": {
+      "type": "object",
+      "properties": {
+        "PolygonID": {
+          "type": "integer"
+        },
+        "Points": {
+          "type": "array",
+          "description": "Coordinates, each as latitude and longitude.",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "BorderColor": {
+          "type": "integer",
+          "description": "24-bit RGB."
+        },
+        "BorderWidth": {
+          "type": "integer",
+          "description": "Pixels."
+        },
+        "BorderOpacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "FillColor": {
+          "type": "integer",
+          "description": "24-bit RGB."
+        },
+        "FillOpacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "Vehicles": {
+      "type": "array",
+      "description": "Vehicles currently inside the geozone.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "VehicleID": {
+            "type": "integer"
+          },
+          "Description": {
+            "type": "string"
+          },
+          "LicensePlate": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "SequenceNumber": {
+      "type": "integer",
+      "format": "int64"
+    },
+    "Enabled": {
+      "type": "boolean",
+      "description": "False when the geozone was deleted. Deleted geozones only appear in the incremental list."
+    }
+  }
+}

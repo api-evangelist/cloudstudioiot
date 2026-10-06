@@ -1,0 +1,89 @@
+generated: '2026-10-05'
+method: derived
+generator: derive-mcp-candidate.py
+source:
+- openapi/cloudstudioiot-openapi.yaml
+status: candidate
+deployment:
+  mode: none
+  auth: unknown
+  verified: probed
+note: No MCP server was found. The pre-flight posted tools/list to /mcp on api.cloudstudioiot.com, cloudstudioiot.com, status.cloudstudioiot.com;
+  verdict absent. Candidate tools below are derived from the 15 operation(s) in the provider's own OpenAPI (15 listed); they describe what a server
+  WOULD expose, not one that exists.
+tools:
+- name: create_access_token
+  operationId: createAccessToken
+  method: POST
+  path: /services/gear/AuthorizationService.svc/CreateClientAccessTokenAllIntegrations
+  description: Create a persistent access token
+- name: delete_access_token
+  operationId: deleteAccessToken
+  method: POST
+  path: /services/gear/AuthorizationService.svc/DeleteClientAccessToken
+  description: Delete a persistent access token
+- name: list_alerts
+  operationId: listAlerts
+  method: GET
+  path: /api/v2/alerts
+  description: List alerts
+- name: list_alerts_incremental
+  operationId: listAlertsIncremental
+  method: GET
+  path: /api/v2/alerts/incremental/{sequenceNumber}
+  description: List alerts changed since a sequence number
+- name: get_alert
+  operationId: getAlert
+  method: GET
+  path: /api/v2/alerts/{alertID}
+  description: Get an alert by ID
+- name: list_alarms
+  operationId: listAlarms
+  method: GET
+  path: /api/v2/alarms
+  description: List alarms
+- name: list_alarms_incremental
+  operationId: listAlarmsIncremental
+  method: GET
+  path: /api/v2/alarms/incremental/{sequenceNumber}
+  description: List alarms changed since a sequence number
+- name: get_alarm
+  operationId: getAlarm
+  method: GET
+  path: /api/v2/alarms/{alarmID}
+  description: Get an alarm by ID
+- name: list_endpoint_data
+  operationId: listEndpointData
+  method: GET
+  path: /api/v2/endpointData
+  description: Get the data of an endpoint
+- name: list_endpoint_data_incremental
+  operationId: listEndpointDataIncremental
+  method: GET
+  path: /api/v2/endpointData/incremental/{sequenceNumber}
+  description: List endpoint data recorded since a sequence number
+- name: get_latest_endpoint_data
+  operationId: getLatestEndpointData
+  method: GET
+  path: /api/v2/endpointData/multiple
+  description: Get the latest reading of up to five endpoints
+- name: list_geozones
+  operationId: listGeozones
+  method: GET
+  path: /api/v2/geozones
+  description: List the geozones of a client
+- name: list_geozones_incremental
+  operationId: listGeozonesIncremental
+  method: GET
+  path: /api/v2/geozones/incremental/{sequenceNumber}
+  description: List geozones changed since a sequence number
+- name: get_geozone
+  operationId: getGeozone
+  method: GET
+  path: /api/v2/geozones/{geozoneID}
+  description: Get a geozone by ID
+- name: get_instance_mapping
+  operationId: getInstanceMapping
+  method: GET
+  path: /api/v2/instance/mapping/{sequenceNumber}
+  description: Map the clients, facilities, devices and endpoints of an instance

@@ -1,0 +1,178 @@
+generated: '2026-10-05'
+method: generated
+source: openapi/cloudstudioiot-openapi.yaml
+description: Recommended x-agentic-access execution contracts, classified heuristically from
+  the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
+  audience per deployment. See research/curity/agentic-governance/.
+summary:
+  operations: 15
+  by_action_class:
+    acting: 2
+    connected: 13
+  by_consequence:
+    write: 2
+    read: 13
+  human_in_the_loop_required: 0
+operations:
+- path: /services/gear/AuthorizationService.svc/CreateClientAccessTokenAllIntegrations
+  method: post
+  operationId: createAccessToken
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /services/gear/AuthorizationService.svc/DeleteClientAccessToken
+  method: post
+  operationId: deleteAccessToken
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /api/v2/alerts
+  method: get
+  operationId: listAlerts
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/alerts/incremental/{sequenceNumber}
+  method: get
+  operationId: listAlertsIncremental
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/alerts/{alertID}
+  method: get
+  operationId: getAlert
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/alarms
+  method: get
+  operationId: listAlarms
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/alarms/incremental/{sequenceNumber}
+  method: get
+  operationId: listAlarmsIncremental
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/alarms/{alarmID}
+  method: get
+  operationId: getAlarm
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/endpointData
+  method: get
+  operationId: listEndpointData
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/endpointData/incremental/{sequenceNumber}
+  method: get
+  operationId: listEndpointDataIncremental
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/endpointData/multiple
+  method: get
+  operationId: getLatestEndpointData
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/geozones
+  method: get
+  operationId: listGeozones
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/geozones/incremental/{sequenceNumber}
+  method: get
+  operationId: listGeozonesIncremental
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/geozones/{geozoneID}
+  method: get
+  operationId: getGeozone
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v2/instance/mapping/{sequenceNumber}
+  method: get
+  operationId: getInstanceMapping
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none

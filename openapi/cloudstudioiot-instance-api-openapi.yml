@@ -1,0 +1,117 @@
+openapi: 3.2.0
+info:
+  title: Cloud Studio IoT Data Extraction Instance API
+  version: '2'
+  summary: Read alerts, alarms, endpoint data, geozones and the instance map from a Cloud Studio IoT instance.
+  description: 'HTTP API to extract data from the Cloud Studio IoT platform (Gear Studio):
+
+    alert definitions, the alarm history, endpoint (sensor) readings, geozones
+
+    and the client / facility / device / endpoint map of an instance.'
+  contact:
+    name: Cloud Studio IoT
+    url: https://cloudstudioiot.com/contact
+    email: info@cloud.studio
+  termsOfService: https://cloudstudioiot.com/terms
+servers:
+- url: https://{host}
+  description: A Cloud Studio IoT instance. Dedicated and on-premise instances use their own host.
+  variables:
+    host:
+      default: gear.cloud.studio
+security:
+- bearerToken: []
+- accessTokenQuery: []
+tags:
+- name: Instance
+  description: Map of clients, facilities, devices and endpoints.
+  externalDocs:
+    url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos/api-de-mapeo-de-instancia
+paths:
+  /api/v2/instance/mapping/{sequenceNumber}:
+    get:
+      operationId: getInstanceMapping
+      tags:
+      - Instance
+      summary: Map the clients, facilities, devices and endpoints of an instance
+      description: 'Returns the instance tree in batches: client, facility, device (with
+
+        its address) and endpoint, each with its identifier and description.
+
+        Start at 0, store the last sequence number received and repeat until
+
+        the list comes back empty. Only complete branches are returned, so a
+
+        device without endpoints does not appear. Requires the access token of
+
+        a global administrator.'
+      parameters:
+      - $ref: '#/components/parameters/sequenceNumber'
+      - name: maxCount
+        in: query
+        description: Maximum number of records to return. Defaults to 100; 500 at most.
+        schema:
+          type: integer
+          default: 100
+          maximum: 500
+      responses:
+        '200':
+          description: A batch of the instance map. An empty list means there are no updates.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: Client, facility, device and endpoint identifiers and descriptions of one branch.
+        '500':
+          $ref: '#/components/responses/ServiceException'
+components:
+  responses:
+    ServiceException:
+      description: The request failed. A missing, invalid or expired access token is also reported this way.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Exception:
+                type: object
+                properties:
+                  ClassName:
+                    type: string
+                  FaultCode:
+                    type: string
+                  FaultData:
+                    type: string
+                  Message:
+                    type: string
+          example:
+            Exception:
+              ClassName: ServiceException
+              FaultCode: '8001'
+              FaultData: ''
+              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
+  parameters:
+    sequenceNumber:
+      name: sequenceNumber
+      in: path
+      required: true
+      description: '`SequenceNumber` of the last item received. Use 0 to start from the beginning.'
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+      description: 'Persistent access token sent as `Authorization: Bearer {accessToken}`.'
+    accessTokenQuery:
+      type: apiKey
+      in: query
+      name: accessToken
+      description: The same access token in the query string, for clients that cannot set headers.
+externalDocs:
+  description: Data Extraction APIs documentation
+  url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
