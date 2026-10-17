@@ -106,17 +106,47 @@ paths:
         '500':
           $ref: '#/components/responses/ServiceException'
 components:
+  parameters:
+    facilityID:
+      name: facilityID
+      in: query
+      description: Only items of this facility.
+      schema:
+        type: integer
+    sequenceNumber:
+      name: sequenceNumber
+      in: path
+      required: true
+      description: '`SequenceNumber` of the last item received. Use 0 to start from the beginning.'
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+    clientID:
+      name: clientID
+      in: query
+      description: Only items of this client.
+      schema:
+        type: integer
+    endpointID:
+      name: endpointID
+      in: query
+      description: Only items of this endpoint.
+      schema:
+        type: integer
+    deviceID:
+      name: deviceID
+      in: query
+      description: Only items of this device.
+      schema:
+        type: integer
+    maxCount:
+      name: maxCount
+      in: query
+      description: Maximum number of items in the result.
+      schema:
+        type: integer
   schemas:
-    ConditionType:
-      type: integer
-      enum:
-      - 1
-      - 2
-      - 3
-      - 4
-      - 5
-      - 6
-      description: 1 equal, 2 not equal, 3 greater, 4 greater or equal, 5 lower, 6 lower or equal.
     Alert:
       type: object
       description: Configuration of an alert.
@@ -185,46 +215,16 @@ components:
         Enabled:
           type: boolean
           description: False when the alert was deleted. Deleted alerts only appear in the incremental list.
-  parameters:
-    maxCount:
-      name: maxCount
-      in: query
-      description: Maximum number of items in the result.
-      schema:
-        type: integer
-    endpointID:
-      name: endpointID
-      in: query
-      description: Only items of this endpoint.
-      schema:
-        type: integer
-    clientID:
-      name: clientID
-      in: query
-      description: Only items of this client.
-      schema:
-        type: integer
-    facilityID:
-      name: facilityID
-      in: query
-      description: Only items of this facility.
-      schema:
-        type: integer
-    deviceID:
-      name: deviceID
-      in: query
-      description: Only items of this device.
-      schema:
-        type: integer
-    sequenceNumber:
-      name: sequenceNumber
-      in: path
-      required: true
-      description: '`SequenceNumber` of the last item received. Use 0 to start from the beginning.'
-      schema:
-        type: integer
-        format: int64
-        minimum: 0
+    ConditionType:
+      type: integer
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      description: 1 equal, 2 not equal, 3 greater, 4 greater or equal, 5 lower, 6 lower or equal.
   responses:
     ServiceException:
       description: The request failed. A missing, invalid or expired access token is also reported this way.

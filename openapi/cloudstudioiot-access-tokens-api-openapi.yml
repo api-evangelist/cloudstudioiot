@@ -110,6 +110,31 @@ paths:
         '500':
           $ref: '#/components/responses/ServiceException'
 components:
+  responses:
+    ServiceException:
+      description: The request failed. A missing, invalid or expired access token is also reported this way.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Exception:
+                type: object
+                properties:
+                  ClassName:
+                    type: string
+                  FaultCode:
+                    type: string
+                  FaultData:
+                    type: string
+                  Message:
+                    type: string
+          example:
+            Exception:
+              ClassName: ServiceException
+              FaultCode: '8001'
+              FaultData: ''
+              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
   schemas:
     DateTimeParts:
       type: object
@@ -134,21 +159,6 @@ components:
               type: integer
             Millisecond:
               type: integer
-    ClientAccessToken:
-      type: object
-      properties:
-        AccessToken:
-          type: string
-        ClientAccessTokenID:
-          type: integer
-        ClientID:
-          type: integer
-        Description:
-          type: string
-        DateTimeCreated:
-          $ref: '#/components/schemas/DateTimeParts'
-        ExpirationDateTime:
-          $ref: '#/components/schemas/DateTimeParts'
     CreateAccessTokenRequest:
       type: object
       required:
@@ -187,31 +197,21 @@ components:
         expiration:
           type: integer
           description: Minutes the token stays valid from its creation. Omit it for a token that expires on 2099-01-01.
-  responses:
-    ServiceException:
-      description: The request failed. A missing, invalid or expired access token is also reported this way.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              Exception:
-                type: object
-                properties:
-                  ClassName:
-                    type: string
-                  FaultCode:
-                    type: string
-                  FaultData:
-                    type: string
-                  Message:
-                    type: string
-          example:
-            Exception:
-              ClassName: ServiceException
-              FaultCode: '8001'
-              FaultData: ''
-              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
+    ClientAccessToken:
+      type: object
+      properties:
+        AccessToken:
+          type: string
+        ClientAccessTokenID:
+          type: integer
+        ClientID:
+          type: integer
+        Description:
+          type: string
+        DateTimeCreated:
+          $ref: '#/components/schemas/DateTimeParts'
+        ExpirationDateTime:
+          $ref: '#/components/schemas/DateTimeParts'
   securitySchemes:
     bearerToken:
       type: http

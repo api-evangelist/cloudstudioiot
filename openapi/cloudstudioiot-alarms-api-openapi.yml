@@ -117,38 +117,41 @@ paths:
         '500':
           $ref: '#/components/responses/ServiceException'
 components:
-  responses:
-    ServiceException:
-      description: The request failed. A missing, invalid or expired access token is also reported this way.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              Exception:
-                type: object
-                properties:
-                  ClassName:
-                    type: string
-                  FaultCode:
-                    type: string
-                  FaultData:
-                    type: string
-                  Message:
-                    type: string
-          example:
-            Exception:
-              ClassName: ServiceException
-              FaultCode: '8001'
-              FaultData: ''
-              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
   parameters:
+    facilityID:
+      name: facilityID
+      in: query
+      description: Only items of this facility.
+      schema:
+        type: integer
+    sequenceNumber:
+      name: sequenceNumber
+      in: path
+      required: true
+      description: '`SequenceNumber` of the last item received. Use 0 to start from the beginning.'
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+    clientID:
+      name: clientID
+      in: query
+      description: Only items of this client.
+      schema:
+        type: integer
     dateFrom:
       name: dateFrom
       in: query
       description: Date from which items are returned.
       schema:
         type: string
+    maxCount500:
+      name: maxCount
+      in: query
+      description: Maximum number of records in the result. Values above 500 are limited to 500.
+      schema:
+        type: integer
+        maximum: 500
     dateTo:
       name: dateTo
       in: query
@@ -161,40 +164,12 @@ components:
       description: Only items of this endpoint.
       schema:
         type: integer
-    clientID:
-      name: clientID
-      in: query
-      description: Only items of this client.
-      schema:
-        type: integer
-    facilityID:
-      name: facilityID
-      in: query
-      description: Only items of this facility.
-      schema:
-        type: integer
     deviceID:
       name: deviceID
       in: query
       description: Only items of this device.
       schema:
         type: integer
-    sequenceNumber:
-      name: sequenceNumber
-      in: path
-      required: true
-      description: '`SequenceNumber` of the last item received. Use 0 to start from the beginning.'
-      schema:
-        type: integer
-        format: int64
-        minimum: 0
-    maxCount500:
-      name: maxCount
-      in: query
-      description: Maximum number of records in the result. Values above 500 are limited to 500.
-      schema:
-        type: integer
-        maximum: 500
   schemas:
     Alarm:
       type: object
@@ -228,6 +203,31 @@ components:
         SequenceNumber:
           type: integer
           format: int64
+  responses:
+    ServiceException:
+      description: The request failed. A missing, invalid or expired access token is also reported this way.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Exception:
+                type: object
+                properties:
+                  ClassName:
+                    type: string
+                  FaultCode:
+                    type: string
+                  FaultData:
+                    type: string
+                  Message:
+                    type: string
+          example:
+            Exception:
+              ClassName: ServiceException
+              FaultCode: '8001'
+              FaultData: ''
+              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
   securitySchemes:
     bearerToken:
       type: http

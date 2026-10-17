@@ -126,59 +126,6 @@ paths:
         '500':
           $ref: '#/components/responses/ServiceException'
 components:
-  parameters:
-    maxCount500:
-      name: maxCount
-      in: query
-      description: Maximum number of records in the result. Values above 500 are limited to 500.
-      schema:
-        type: integer
-        maximum: 500
-    dateFrom:
-      name: dateFrom
-      in: query
-      description: Date from which items are returned.
-      schema:
-        type: string
-    dateTo:
-      name: dateTo
-      in: query
-      description: Date until which items are returned.
-      schema:
-        type: string
-    endpointID:
-      name: endpointID
-      in: query
-      description: Only items of this endpoint.
-      schema:
-        type: integer
-    clientID:
-      name: clientID
-      in: query
-      description: Only items of this client.
-      schema:
-        type: integer
-    facilityID:
-      name: facilityID
-      in: query
-      description: Only items of this facility.
-      schema:
-        type: integer
-    deviceID:
-      name: deviceID
-      in: query
-      description: Only items of this device.
-      schema:
-        type: integer
-    sequenceNumber:
-      name: sequenceNumber
-      in: path
-      required: true
-      description: '`SequenceNumber` of the last item received. Use 0 to start from the beginning.'
-      schema:
-        type: integer
-        format: int64
-        minimum: 0
   schemas:
     LatestEndpointData:
       type: object
@@ -238,6 +185,59 @@ components:
         SequenceNumber:
           type: integer
           format: int64
+  parameters:
+    facilityID:
+      name: facilityID
+      in: query
+      description: Only items of this facility.
+      schema:
+        type: integer
+    sequenceNumber:
+      name: sequenceNumber
+      in: path
+      required: true
+      description: '`SequenceNumber` of the last item received. Use 0 to start from the beginning.'
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+    clientID:
+      name: clientID
+      in: query
+      description: Only items of this client.
+      schema:
+        type: integer
+    dateFrom:
+      name: dateFrom
+      in: query
+      description: Date from which items are returned.
+      schema:
+        type: string
+    maxCount500:
+      name: maxCount
+      in: query
+      description: Maximum number of records in the result. Values above 500 are limited to 500.
+      schema:
+        type: integer
+        maximum: 500
+    deviceID:
+      name: deviceID
+      in: query
+      description: Only items of this device.
+      schema:
+        type: integer
+    endpointID:
+      name: endpointID
+      in: query
+      description: Only items of this endpoint.
+      schema:
+        type: integer
+    dateTo:
+      name: dateTo
+      in: query
+      description: Date until which items are returned.
+      schema:
+        type: string
   responses:
     ServiceException:
       description: The request failed. A missing, invalid or expired access token is also reported this way.

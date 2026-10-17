@@ -107,6 +107,31 @@ paths:
         '500':
           $ref: '#/components/responses/ServiceException'
 components:
+  responses:
+    ServiceException:
+      description: The request failed. A missing, invalid or expired access token is also reported this way.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              Exception:
+                type: object
+                properties:
+                  ClassName:
+                    type: string
+                  FaultCode:
+                    type: string
+                  FaultData:
+                    type: string
+                  Message:
+                    type: string
+          example:
+            Exception:
+              ClassName: ServiceException
+              FaultCode: '8001'
+              FaultData: ''
+              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
   schemas:
     Geozone:
       type: object
@@ -167,12 +192,6 @@ components:
           type: boolean
           description: False when the geozone was deleted. Deleted geozones only appear in the incremental list.
   parameters:
-    maxCount:
-      name: maxCount
-      in: query
-      description: Maximum number of items in the result.
-      schema:
-        type: integer
     sequenceNumber:
       name: sequenceNumber
       in: path
@@ -182,31 +201,12 @@ components:
         type: integer
         format: int64
         minimum: 0
-  responses:
-    ServiceException:
-      description: The request failed. A missing, invalid or expired access token is also reported this way.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              Exception:
-                type: object
-                properties:
-                  ClassName:
-                    type: string
-                  FaultCode:
-                    type: string
-                  FaultData:
-                    type: string
-                  Message:
-                    type: string
-          example:
-            Exception:
-              ClassName: ServiceException
-              FaultCode: '8001'
-              FaultData: ''
-              Message: The access token is invalid or it doesn't have sufficient permissions to execute the requested operation
+    maxCount:
+      name: maxCount
+      in: query
+      description: Maximum number of items in the result.
+      schema:
+        type: integer
   securitySchemes:
     bearerToken:
       type: http

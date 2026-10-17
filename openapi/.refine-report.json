@@ -1,7 +1,7 @@
 {
   "provider": "cloudstudioiot",
   "sources": [
-    "cloudstudioiot-openapi.yaml"
+    "_original/cloudstudioiot-openapi.yaml"
   ],
   "outputs": [
     "cloudstudioiot-access-tokens-api-openapi.yml",
@@ -11,14 +11,20 @@
     "cloudstudioiot-geozones-api-openapi.yml",
     "cloudstudioiot-instance-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/cloudstudioiot-openapi.yaml"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "cloudstudioiot-openapi.yaml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "apis.yml register: written (+6 apis, 6 total)"
+    "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "cloudstudioiot-access-tokens-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "cloudstudioiot-alarms-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "cloudstudioiot-alerts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "cloudstudioiot-endpoint-data-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "cloudstudioiot-geozones-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "cloudstudioiot-instance-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
