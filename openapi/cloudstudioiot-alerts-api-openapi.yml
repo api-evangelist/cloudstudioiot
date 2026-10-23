@@ -14,6 +14,8 @@ info:
     email: info@cloud.studio
   termsOfService: https://cloudstudioiot.com/terms
 servers:
+- url: https://gear.cloud.studio
+  description: The shared Cloud Studio IoT cloud instance.
 - url: https://{host}
   description: A Cloud Studio IoT instance. Dedicated and on-premise instances use their own host.
   variables:
