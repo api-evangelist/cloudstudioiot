@@ -26,6 +26,8 @@ externalDocs:
   description: Data Extraction APIs documentation
   url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
 servers:
+  - url: https://gear.cloud.studio
+    description: The shared Cloud Studio IoT cloud instance.
   - url: https://{host}
     description: A Cloud Studio IoT instance. Dedicated and on-premise instances use their own host.
     variables:

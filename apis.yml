@@ -5,14 +5,14 @@ description: Cloud Studio IoT provides an Industrial AI IoT platform delivering 
   management, agriculture and manufacturing. Their cloud‑based services include data extraction APIs, AI‑driven analytics, device connectivity
   (LoRaWAN, MQTT, NB‑IoT) and a low‑code scripting environment. The company emphasizes real‑time telemetry, AI‑powered insights and a comprehensive
   suite of tools for developers to integrate, monitor and manage IoT deployments.
-url: https://raw.githubusercontent.com/api-evangelist/cloudstudioiot/refs/heads/main/apis.yml
+url: https://cloudstudioiot.com/apis.json
 x-type: company
 x-source: harvest:new-submission
 x-tier: profiled
 x-tier-reason: enrichment pass 2026-10-05 (modular-v1; was harvest)
 specificationVersion: '0.20'
 created: '2026-10-05'
-modified: '2026-10-05'
+modified: '2026-10-23'
 tags:
 - Company
 - IoT
@@ -20,6 +20,9 @@ tags:
 - Industrial
 - Platform
 maintainers:
+- FN: Cloud Studio IoT
+  email: info@cloud.studio
+  url: https://cloudstudioiot.com
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
@@ -62,7 +65,15 @@ common:
 - type: Documentation
   url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
 - type: GettingStarted
-  url: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
+  url: https://cloudstudioiot.com/docs
+- type: DeveloperPortal
+  url: https://cloudstudioiot.com/docs
+- type: APIReference
+  url: https://cloudstudioiot.com/openapi.yaml
+- type: Examples
+  url: https://cloudstudioiot.com/docs/configuracion-del-cliente/dispositivos-y-endpoints/dispositivos/integracion-de-dispositivos/ejemplo-integracion-esp32-mqtt
+- type: AgentSkill
+  url: https://github.com/CloudStudioIoT/gear-api-skill
 - type: Support
   url: https://cloudstudioiot.com/contact
 - type: Blog
@@ -72,10 +83,12 @@ common:
 - type: Pricing
   url: https://cloudstudioiot.com/pricing
 - type: SignUp
-  url: https://cloudstudioiot.com/contact
+  url: https://gear.cloud.studio/gear/common/sign-up
 - type: TermsOfService
   url: https://cloudstudioiot.com/terms
 - type: PrivacyPolicy
+  url: https://cloudstudioiot.com/privacy
+- type: DataSubjectRequest
   url: https://cloudstudioiot.com/privacy
 - type: Postman
   url: https://www.postman.com/cloudstudioiot/workspace
@@ -84,7 +97,7 @@ apis:
   name: Cloud Studio IoT Access tokens API
   description: Create and delete the persistent access tokens the rest of the API uses.
   humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
-  baseURL: https://{host}
+  baseURL: https://gear.cloud.studio
   tags:
   - Access tokens
   properties:
@@ -106,7 +119,7 @@ apis:
   name: Cloud Studio IoT Alarms API
   description: Alarms recorded by the platform, open and closed.
   humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
-  baseURL: https://{host}
+  baseURL: https://gear.cloud.studio
   tags:
   - Alarms
   properties:
@@ -128,7 +141,7 @@ apis:
   name: Cloud Studio IoT Alerts API
   description: Alert definitions (the rules that open alarms).
   humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
-  baseURL: https://{host}
+  baseURL: https://gear.cloud.studio
   tags:
   - Alerts
   properties:
@@ -150,7 +163,7 @@ apis:
   name: Cloud Studio IoT Endpoint data API
   description: Readings reported by endpoints (sensors and actuators).
   humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
-  baseURL: https://{host}
+  baseURL: https://gear.cloud.studio
   tags:
   - Endpoint data
   properties:
@@ -172,7 +185,7 @@ apis:
   name: Cloud Studio IoT Geozones API
   description: Geozones of a client and the vehicles inside them.
   humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
-  baseURL: https://{host}
+  baseURL: https://gear.cloud.studio
   tags:
   - Geozones
   properties:
@@ -194,7 +207,7 @@ apis:
   name: Cloud Studio IoT Instance API
   description: Map of clients, facilities, devices and endpoints.
   humanURL: https://cloudstudioiot.com/docs/apis-de-extraccion-de-datos
-  baseURL: https://{host}
+  baseURL: https://gear.cloud.studio
   tags:
   - Instance
   properties:
